@@ -1,7 +1,6 @@
 import 'package:app/core/di/injectable.dart';
 import 'package:app/core/resources/colors_x.dart';
 import 'package:app/core/route/route.gr.dart';
-import 'package:app/features/presentation/components/chat_error_wid.dart';
 import 'package:app/features/presentation/components/chat_wid.dart';
 import 'package:app/features/presentation/cubit/image_gen_cubit.dart';
 import 'package:app/features/presentation/widgets/app_bar/ai_bar.dart';
