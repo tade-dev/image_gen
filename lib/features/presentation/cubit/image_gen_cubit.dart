@@ -134,8 +134,9 @@ class ImageGenCubit extends Cubit<ImageGenState> {
         ]
       ));
 
-        log(state.promptMessages.toString());
-        log(state.recentsPrompts.toString());
+      log(state.promptMessages.toString());
+      log(state.recentsPrompts.toString());
+
       }
     );
 
