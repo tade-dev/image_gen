@@ -22,6 +22,7 @@ RecentPromptModel _$RecentPromptModelFromJson(Map<String, dynamic> json) {
 mixin _$RecentPromptModel {
   String? get id => throw _privateConstructorUsedError;
   String? get createdAt => throw _privateConstructorUsedError;
+  String? get lastUpdatedAt => throw _privateConstructorUsedError;
   List<Message>? get messages => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -36,7 +37,11 @@ abstract class $RecentPromptModelCopyWith<$Res> {
           RecentPromptModel value, $Res Function(RecentPromptModel) then) =
       _$RecentPromptModelCopyWithImpl<$Res, RecentPromptModel>;
   @useResult
-  $Res call({String? id, String? createdAt, List<Message>? messages});
+  $Res call(
+      {String? id,
+      String? createdAt,
+      String? lastUpdatedAt,
+      List<Message>? messages});
 }
 
 /// @nodoc
@@ -54,6 +59,7 @@ class _$RecentPromptModelCopyWithImpl<$Res, $Val extends RecentPromptModel>
   $Res call({
     Object? id = freezed,
     Object? createdAt = freezed,
+    Object? lastUpdatedAt = freezed,
     Object? messages = freezed,
   }) {
     return _then(_value.copyWith(
@@ -64,6 +70,10 @@ class _$RecentPromptModelCopyWithImpl<$Res, $Val extends RecentPromptModel>
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastUpdatedAt: freezed == lastUpdatedAt
+          ? _value.lastUpdatedAt
+          : lastUpdatedAt // ignore: cast_nullable_to_non_nullable
               as String?,
       messages: freezed == messages
           ? _value.messages
@@ -81,7 +91,11 @@ abstract class _$$RecentPromptModelImplCopyWith<$Res>
       __$$RecentPromptModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? id, String? createdAt, List<Message>? messages});
+  $Res call(
+      {String? id,
+      String? createdAt,
+      String? lastUpdatedAt,
+      List<Message>? messages});
 }
 
 /// @nodoc
@@ -97,6 +111,7 @@ class __$$RecentPromptModelImplCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? createdAt = freezed,
+    Object? lastUpdatedAt = freezed,
     Object? messages = freezed,
   }) {
     return _then(_$RecentPromptModelImpl(
@@ -107,6 +122,10 @@ class __$$RecentPromptModelImplCopyWithImpl<$Res>
       createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      lastUpdatedAt: freezed == lastUpdatedAt
+          ? _value.lastUpdatedAt
+          : lastUpdatedAt // ignore: cast_nullable_to_non_nullable
               as String?,
       messages: freezed == messages
           ? _value._messages
@@ -120,7 +139,10 @@ class __$$RecentPromptModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$RecentPromptModelImpl implements _RecentPromptModel {
   const _$RecentPromptModelImpl(
-      {this.id, this.createdAt, final List<Message>? messages})
+      {this.id,
+      this.createdAt,
+      this.lastUpdatedAt,
+      final List<Message>? messages})
       : _messages = messages;
 
   factory _$RecentPromptModelImpl.fromJson(Map<String, dynamic> json) =>
@@ -130,6 +152,8 @@ class _$RecentPromptModelImpl implements _RecentPromptModel {
   final String? id;
   @override
   final String? createdAt;
+  @override
+  final String? lastUpdatedAt;
   final List<Message>? _messages;
   @override
   List<Message>? get messages {
@@ -142,7 +166,7 @@ class _$RecentPromptModelImpl implements _RecentPromptModel {
 
   @override
   String toString() {
-    return 'RecentPromptModel(id: $id, createdAt: $createdAt, messages: $messages)';
+    return 'RecentPromptModel(id: $id, createdAt: $createdAt, lastUpdatedAt: $lastUpdatedAt, messages: $messages)';
   }
 
   @override
@@ -153,12 +177,14 @@ class _$RecentPromptModelImpl implements _RecentPromptModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
+            (identical(other.lastUpdatedAt, lastUpdatedAt) ||
+                other.lastUpdatedAt == lastUpdatedAt) &&
             const DeepCollectionEquality().equals(other._messages, _messages));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, createdAt,
+  int get hashCode => Object.hash(runtimeType, id, createdAt, lastUpdatedAt,
       const DeepCollectionEquality().hash(_messages));
 
   @JsonKey(ignore: true)
@@ -180,6 +206,7 @@ abstract class _RecentPromptModel implements RecentPromptModel {
   const factory _RecentPromptModel(
       {final String? id,
       final String? createdAt,
+      final String? lastUpdatedAt,
       final List<Message>? messages}) = _$RecentPromptModelImpl;
 
   factory _RecentPromptModel.fromJson(Map<String, dynamic> json) =
@@ -189,6 +216,8 @@ abstract class _RecentPromptModel implements RecentPromptModel {
   String? get id;
   @override
   String? get createdAt;
+  @override
+  String? get lastUpdatedAt;
   @override
   List<Message>? get messages;
   @override

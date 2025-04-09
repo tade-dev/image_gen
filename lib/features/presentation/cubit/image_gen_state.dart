@@ -16,6 +16,7 @@ class ImageGenState with _$ImageGenState {
     List<Message>? promptMessages,
     ChatErrorModel? chatErrorModel,
     @Default("") String currentMessageId,
+    @Default("") String? activeConversationId,
     @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus generateImageStatus,
     @Default(FormzSubmissionStatus.initial) FormzSubmissionStatus reGenerateImageStatus,
   }) = _Initial;

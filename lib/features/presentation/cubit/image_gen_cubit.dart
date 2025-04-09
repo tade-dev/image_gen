@@ -61,26 +61,37 @@ class ImageGenCubit extends Cubit<ImageGenState> {
     ));
   }
 
-  generateImage({prompt}) async {
-
+  generateImage({String? prompt, String? conversationId}) async {
+    final messageId = uuid.v4();
+    
     emit(state.copyWith(
       generateImageStatus: FormzSubmissionStatus.inProgress,
       chatErrorModel: null,
       genImage: null,
-      currentMessageId: uuid.v4(),
+      currentMessageId: messageId,
     ));
 
-    emit(state.copyWith(
-      promptMessages: [
-        Message(
-          id: state.currentMessageId,
-          createdAt: DateTime.now().toString(),
-          body: prompt ?? state.promptString,
-          attachments: [],
-        ),
-        ...?state.promptMessages,
-      ],
-    ));
+    final newPromptMessage = Message(
+      id: messageId,
+      createdAt: DateTime.now().toString(),
+      body: prompt ?? state.promptString,
+      attachments: [],
+    );
+    
+    final currentConversationId = conversationId ?? 
+      (state.activeConversationId ?? uuid.v4());
+    
+    if (state.activeConversationId == currentConversationId) {
+      final updatedMessages = [newPromptMessage, ...?state.promptMessages];
+      emit(state.copyWith(
+        promptMessages: updatedMessages,
+      ));
+    } else {
+      emit(state.copyWith(
+        promptMessages: [newPromptMessage],
+        activeConversationId: currentConversationId,
+      ));
+    }
     
     var payload = RequestParams(
       prompt: prompt ?? state.promptString,
@@ -97,51 +108,90 @@ class ImageGenCubit extends Cubit<ImageGenState> {
         ));
       },
       (r) {
+        int index = state.promptMessages?.indexWhere((p) => p.id == messageId) ?? -1;
+        
+        Message updatedMessage = Message(
+          id: messageId,
+          createdAt: DateTime.now().toString(),
+          body: prompt ?? state.promptString,
+          attachments: r.data?.map((e) => e.url ?? "").toList() ?? [],
+        );
 
-      int index = state.promptMessages?.indexWhere((p) => p.id == state.currentMessageId) ?? -1;
-
-      Message newMessage = Message(
-        createdAt: DateTime.now().toString(),
-        body: prompt ?? state.prompt?.text,
-        attachments: r.data?.map((e) => e.url ?? "").toList() ?? [],
-      );
-
-      List<Message> updatedMessages = [...(state.promptMessages ?? [])];
-
-      if (index != -1) {
-        updatedMessages[index] = newMessage;
-      } else {
-        updatedMessages.insert(0, newMessage);
-      }
-
-      emit(state.copyWith(
-        generateImageStatus: FormzSubmissionStatus.success,
-        genImage: r,
-        genImageData: r.data,
-        promptError: null,
-        recentImages: [
-          ...?r.data?.map((e) => e.url ?? ""),
-          ...state.recentImages,
-        ],
-        promptMessages: updatedMessages,
-        recentsPrompts: [
-          RecentPromptModel(
-            id: uuid.v4(),
-            createdAt: DateTime.now().toString(),
+        List<Message> updatedMessages = [...(state.promptMessages ?? [])];
+        if (index != -1) {
+          updatedMessages[index] = updatedMessage;
+        } else {
+          updatedMessages.insert(0, updatedMessage);
+        }
+        
+        int conversationIndex = state.recentsPrompts?.indexWhere(
+          (conv) => conv.id == currentConversationId
+        ) ?? -1;
+        
+        List<RecentPromptModel> updatedRecentPrompts = [...?state.recentsPrompts];
+        
+        if (conversationIndex != -1) {
+          RecentPromptModel updatedConversation = RecentPromptModel(
+            id: currentConversationId,
+            createdAt: updatedRecentPrompts[conversationIndex].createdAt,
+            lastUpdatedAt: DateTime.now().toString(),
             messages: updatedMessages
-          ),
-          ...?state.recentsPrompts,
-        ]
-      ));
+          );
+          updatedRecentPrompts[conversationIndex] = updatedConversation;
+        } else {
+          RecentPromptModel newConversation = RecentPromptModel(
+            id: currentConversationId,
+            createdAt: DateTime.now().toString(),
+            lastUpdatedAt: DateTime.now().toString(),
+            messages: updatedMessages
+          );
+          updatedRecentPrompts.insert(0, newConversation);
+        }
 
-      log(state.promptMessages.toString());
-      log(state.recentsPrompts.toString());
+        emit(state.copyWith(
+          generateImageStatus: FormzSubmissionStatus.success,
+          genImage: r,
+          genImageData: r.data,
+          promptError: null,
+          recentImages: [
+            ...?r.data?.map((e) => e.url ?? ""),
+            ...state.recentImages,
+          ],
+          promptMessages: updatedMessages,
+          recentsPrompts: updatedRecentPrompts,
+          activeConversationId: currentConversationId,
+        ));
 
+        log("Current conversation ID: $currentConversationId");
+        log("Updated messages: ${updatedMessages.length}");
+        log("Recent prompts count: ${updatedRecentPrompts.length}");
+        
+        // await GeneratedImagesCache().setGeneratedImagesCache(state.recentImages);
       }
     );
+  }
 
-    await GeneratedImagesCache().setGeneratedImagesCache(state.recentImages);
+  startNewConversation() {
+    emit(state.copyWith(
+      activeConversationId: null,
+      promptMessages: [],
+      promptString: '',
+    ));
+  }
 
+  loadConversation(String conversationId) {
+    final conversationIndex = state.recentsPrompts?.indexWhere(
+      (conv) => conv.id == conversationId
+    ) ?? -1;
+    
+    if (conversationIndex != -1 && state.recentsPrompts != null) {
+      final conversation = state.recentsPrompts![conversationIndex];
+      
+      emit(state.copyWith(
+        activeConversationId: conversationId,
+        promptMessages: conversation.messages,
+      ));
+    }
   }
 
   reGenerateImage({required String prompt}) async {

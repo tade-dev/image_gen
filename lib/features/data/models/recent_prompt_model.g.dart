@@ -11,6 +11,7 @@ _$RecentPromptModelImpl _$$RecentPromptModelImplFromJson(
     _$RecentPromptModelImpl(
       id: json['id'] as String?,
       createdAt: json['createdAt'] as String?,
+      lastUpdatedAt: json['lastUpdatedAt'] as String?,
       messages: (json['messages'] as List<dynamic>?)
           ?.map((e) => Message.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -21,6 +22,7 @@ Map<String, dynamic> _$$RecentPromptModelImplToJson(
     <String, dynamic>{
       'id': instance.id,
       'createdAt': instance.createdAt,
+      'lastUpdatedAt': instance.lastUpdatedAt,
       'messages': instance.messages,
     };
 

@@ -31,6 +31,7 @@ class ChatHistoryView extends StatelessWidget {
               actions: [
                 IconButton(
                   onPressed: () {
+                    context.read<ImageGenCubit>().startNewConversation();
                     si<AppRouter>().push(const ChatRoomView());
                   },
                   icon: const Icon(

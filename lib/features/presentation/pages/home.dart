@@ -39,6 +39,7 @@ class HomePageView extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {
+                    context.read<ImageGenCubit>().startNewConversation();
                     si<AppRouter>().push(const ChatRoomView());
                   },
                   icon: const Icon(
@@ -101,8 +102,15 @@ class HomePageView extends StatelessWidget {
                           visible: state.promptString.isNotEmpty,
                           child: GestureDetector(
                             onTap: () {
-                              context.read<ImageGenCubit>().generateImage(prompt: state.promptString);
-                              si<AppRouter>().push(const ChatRoomView());
+                              context.read<ImageGenCubit>().startNewConversation();
+                              Future.delayed(const Duration(
+                                milliseconds: 100
+                              ), (){
+                                if(context.mounted) {
+                                  context.read<ImageGenCubit>().generateImage(prompt: state.promptString);
+                                  si<AppRouter>().push(const ChatRoomView());
+                                }
+                              });
                             },
                             child: SvgPicture.asset(
                               Assets.svg.mynauiArrowUpRightCircleSolid,
@@ -142,10 +150,17 @@ class HomePageView extends StatelessWidget {
             var suggestion = state.imageSuggestions[index];
             return SuggestionTile(
               onTap: () {
-                context.read<ImageGenCubit>().generateImage(
-                  prompt: suggestion["prompt"]
-                );
-                si<AppRouter>().push(const ChatRoomView());
+                context.read<ImageGenCubit>().startNewConversation();
+                Future.delayed(const Duration(
+                  milliseconds: 100
+                ), (){
+                  if(context.mounted) {
+                    context.read<ImageGenCubit>().generateImage(
+                      prompt: suggestion["prompt"]
+                    );
+                    si<AppRouter>().push(const ChatRoomView());
+                  }
+                });
               },
               title: suggestion["prompt"], 
               imagePath: suggestion["image"]
@@ -187,7 +202,7 @@ buildRecents(
             timeStamp: si<ImageGenCubit>().formatDateTime(DateTime.parse(recents?.createdAt ?? DateTime.now().toString())), 
             title: recents?.messages?.first.body ?? "", 
             onTap: (){
-              si<ImageGenCubit>().getRecentPromptMessages(recents?.messages ?? []);
+              si<ImageGenCubit>().loadConversation(recents?.id ?? "");
               si<AppRouter>().push(const ChatRoomView());
             },
             index: index,

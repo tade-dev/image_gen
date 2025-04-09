@@ -27,6 +27,7 @@ mixin _$ImageGenState {
   List<Message>? get promptMessages => throw _privateConstructorUsedError;
   ChatErrorModel? get chatErrorModel => throw _privateConstructorUsedError;
   String get currentMessageId => throw _privateConstructorUsedError;
+  String? get activeConversationId => throw _privateConstructorUsedError;
   FormzSubmissionStatus get generateImageStatus =>
       throw _privateConstructorUsedError;
   FormzSubmissionStatus get reGenerateImageStatus =>
@@ -54,6 +55,7 @@ abstract class $ImageGenStateCopyWith<$Res> {
       List<Message>? promptMessages,
       ChatErrorModel? chatErrorModel,
       String currentMessageId,
+      String? activeConversationId,
       FormzSubmissionStatus generateImageStatus,
       FormzSubmissionStatus reGenerateImageStatus});
 
@@ -84,6 +86,7 @@ class _$ImageGenStateCopyWithImpl<$Res, $Val extends ImageGenState>
     Object? promptMessages = freezed,
     Object? chatErrorModel = freezed,
     Object? currentMessageId = null,
+    Object? activeConversationId = freezed,
     Object? generateImageStatus = null,
     Object? reGenerateImageStatus = null,
   }) {
@@ -128,6 +131,10 @@ class _$ImageGenStateCopyWithImpl<$Res, $Val extends ImageGenState>
           ? _value.currentMessageId
           : currentMessageId // ignore: cast_nullable_to_non_nullable
               as String,
+      activeConversationId: freezed == activeConversationId
+          ? _value.activeConversationId
+          : activeConversationId // ignore: cast_nullable_to_non_nullable
+              as String?,
       generateImageStatus: null == generateImageStatus
           ? _value.generateImageStatus
           : generateImageStatus // ignore: cast_nullable_to_non_nullable
@@ -183,6 +190,7 @@ abstract class _$$InitialImplCopyWith<$Res>
       List<Message>? promptMessages,
       ChatErrorModel? chatErrorModel,
       String currentMessageId,
+      String? activeConversationId,
       FormzSubmissionStatus generateImageStatus,
       FormzSubmissionStatus reGenerateImageStatus});
 
@@ -213,6 +221,7 @@ class __$$InitialImplCopyWithImpl<$Res>
     Object? promptMessages = freezed,
     Object? chatErrorModel = freezed,
     Object? currentMessageId = null,
+    Object? activeConversationId = freezed,
     Object? generateImageStatus = null,
     Object? reGenerateImageStatus = null,
   }) {
@@ -257,6 +266,10 @@ class __$$InitialImplCopyWithImpl<$Res>
           ? _value.currentMessageId
           : currentMessageId // ignore: cast_nullable_to_non_nullable
               as String,
+      activeConversationId: freezed == activeConversationId
+          ? _value.activeConversationId
+          : activeConversationId // ignore: cast_nullable_to_non_nullable
+              as String?,
       generateImageStatus: null == generateImageStatus
           ? _value.generateImageStatus
           : generateImageStatus // ignore: cast_nullable_to_non_nullable
@@ -283,6 +296,7 @@ class _$InitialImpl extends _Initial {
       final List<Message>? promptMessages,
       this.chatErrorModel,
       this.currentMessageId = "",
+      this.activeConversationId = "",
       this.generateImageStatus = FormzSubmissionStatus.initial,
       this.reGenerateImageStatus = FormzSubmissionStatus.initial})
       : _genImageData = genImageData,
@@ -346,6 +360,9 @@ class _$InitialImpl extends _Initial {
   final String currentMessageId;
   @override
   @JsonKey()
+  final String? activeConversationId;
+  @override
+  @JsonKey()
   final FormzSubmissionStatus generateImageStatus;
   @override
   @JsonKey()
@@ -353,7 +370,7 @@ class _$InitialImpl extends _Initial {
 
   @override
   String toString() {
-    return 'ImageGenState(prompt: $prompt, promptString: $promptString, genImage: $genImage, genImageData: $genImageData, promptError: $promptError, recentImages: $recentImages, recentsPrompts: $recentsPrompts, promptMessages: $promptMessages, chatErrorModel: $chatErrorModel, currentMessageId: $currentMessageId, generateImageStatus: $generateImageStatus, reGenerateImageStatus: $reGenerateImageStatus)';
+    return 'ImageGenState(prompt: $prompt, promptString: $promptString, genImage: $genImage, genImageData: $genImageData, promptError: $promptError, recentImages: $recentImages, recentsPrompts: $recentsPrompts, promptMessages: $promptMessages, chatErrorModel: $chatErrorModel, currentMessageId: $currentMessageId, activeConversationId: $activeConversationId, generateImageStatus: $generateImageStatus, reGenerateImageStatus: $reGenerateImageStatus)';
   }
 
   @override
@@ -380,6 +397,8 @@ class _$InitialImpl extends _Initial {
                 other.chatErrorModel == chatErrorModel) &&
             (identical(other.currentMessageId, currentMessageId) ||
                 other.currentMessageId == currentMessageId) &&
+            (identical(other.activeConversationId, activeConversationId) ||
+                other.activeConversationId == activeConversationId) &&
             (identical(other.generateImageStatus, generateImageStatus) ||
                 other.generateImageStatus == generateImageStatus) &&
             (identical(other.reGenerateImageStatus, reGenerateImageStatus) ||
@@ -399,6 +418,7 @@ class _$InitialImpl extends _Initial {
       const DeepCollectionEquality().hash(_promptMessages),
       chatErrorModel,
       currentMessageId,
+      activeConversationId,
       generateImageStatus,
       reGenerateImageStatus);
 
@@ -421,6 +441,7 @@ abstract class _Initial extends ImageGenState {
       final List<Message>? promptMessages,
       final ChatErrorModel? chatErrorModel,
       final String currentMessageId,
+      final String? activeConversationId,
       final FormzSubmissionStatus generateImageStatus,
       final FormzSubmissionStatus reGenerateImageStatus}) = _$InitialImpl;
   const _Initial._() : super._();
@@ -445,6 +466,8 @@ abstract class _Initial extends ImageGenState {
   ChatErrorModel? get chatErrorModel;
   @override
   String get currentMessageId;
+  @override
+  String? get activeConversationId;
   @override
   FormzSubmissionStatus get generateImageStatus;
   @override

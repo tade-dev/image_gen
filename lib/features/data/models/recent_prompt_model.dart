@@ -17,6 +17,7 @@ class RecentPromptModel with _$RecentPromptModel {
     const factory RecentPromptModel({
         String? id,
         String? createdAt,
+        String? lastUpdatedAt,
         List<Message>? messages,
     }) = _RecentPromptModel;
 
