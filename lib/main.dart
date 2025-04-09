@@ -11,7 +11,7 @@ void main() async{
   
   configureDependencies();
   si.registerLazySingleton(()=> AppRouter());
-
+  
   await dotenv.load(fileName: '.env');
   
   runApp(const MyApp());

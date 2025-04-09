@@ -236,6 +236,7 @@ mixin _$Message {
   String? get createdAt => throw _privateConstructorUsedError;
   String? get body => throw _privateConstructorUsedError;
   List<String>? get attachments => throw _privateConstructorUsedError;
+  bool? get isRegenerating => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -248,7 +249,11 @@ abstract class $MessageCopyWith<$Res> {
       _$MessageCopyWithImpl<$Res, Message>;
   @useResult
   $Res call(
-      {String? id, String? createdAt, String? body, List<String>? attachments});
+      {String? id,
+      String? createdAt,
+      String? body,
+      List<String>? attachments,
+      bool? isRegenerating});
 }
 
 /// @nodoc
@@ -268,6 +273,7 @@ class _$MessageCopyWithImpl<$Res, $Val extends Message>
     Object? createdAt = freezed,
     Object? body = freezed,
     Object? attachments = freezed,
+    Object? isRegenerating = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -286,6 +292,10 @@ class _$MessageCopyWithImpl<$Res, $Val extends Message>
           ? _value.attachments
           : attachments // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      isRegenerating: freezed == isRegenerating
+          ? _value.isRegenerating
+          : isRegenerating // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ) as $Val);
   }
 }
@@ -298,7 +308,11 @@ abstract class _$$MessageImplCopyWith<$Res> implements $MessageCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String? id, String? createdAt, String? body, List<String>? attachments});
+      {String? id,
+      String? createdAt,
+      String? body,
+      List<String>? attachments,
+      bool? isRegenerating});
 }
 
 /// @nodoc
@@ -316,6 +330,7 @@ class __$$MessageImplCopyWithImpl<$Res>
     Object? createdAt = freezed,
     Object? body = freezed,
     Object? attachments = freezed,
+    Object? isRegenerating = freezed,
   }) {
     return _then(_$MessageImpl(
       id: freezed == id
@@ -334,6 +349,10 @@ class __$$MessageImplCopyWithImpl<$Res>
           ? _value._attachments
           : attachments // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      isRegenerating: freezed == isRegenerating
+          ? _value.isRegenerating
+          : isRegenerating // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 }
@@ -342,7 +361,11 @@ class __$$MessageImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$MessageImpl implements _Message {
   const _$MessageImpl(
-      {this.id, this.createdAt, this.body, final List<String>? attachments})
+      {this.id,
+      this.createdAt,
+      this.body,
+      final List<String>? attachments,
+      this.isRegenerating})
       : _attachments = attachments;
 
   factory _$MessageImpl.fromJson(Map<String, dynamic> json) =>
@@ -365,8 +388,11 @@ class _$MessageImpl implements _Message {
   }
 
   @override
+  final bool? isRegenerating;
+
+  @override
   String toString() {
-    return 'Message(id: $id, createdAt: $createdAt, body: $body, attachments: $attachments)';
+    return 'Message(id: $id, createdAt: $createdAt, body: $body, attachments: $attachments, isRegenerating: $isRegenerating)';
   }
 
   @override
@@ -379,13 +405,15 @@ class _$MessageImpl implements _Message {
                 other.createdAt == createdAt) &&
             (identical(other.body, body) || other.body == body) &&
             const DeepCollectionEquality()
-                .equals(other._attachments, _attachments));
+                .equals(other._attachments, _attachments) &&
+            (identical(other.isRegenerating, isRegenerating) ||
+                other.isRegenerating == isRegenerating));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, createdAt, body,
-      const DeepCollectionEquality().hash(_attachments));
+      const DeepCollectionEquality().hash(_attachments), isRegenerating);
 
   @JsonKey(ignore: true)
   @override
@@ -406,7 +434,8 @@ abstract class _Message implements Message {
       {final String? id,
       final String? createdAt,
       final String? body,
-      final List<String>? attachments}) = _$MessageImpl;
+      final List<String>? attachments,
+      final bool? isRegenerating}) = _$MessageImpl;
 
   factory _Message.fromJson(Map<String, dynamic> json) = _$MessageImpl.fromJson;
 
@@ -418,6 +447,8 @@ abstract class _Message implements Message {
   String? get body;
   @override
   List<String>? get attachments;
+  @override
+  bool? get isRegenerating;
   @override
   @JsonKey(ignore: true)
   _$$MessageImplCopyWith<_$MessageImpl> get copyWith =>

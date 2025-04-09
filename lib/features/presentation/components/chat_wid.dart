@@ -19,10 +19,12 @@ class ChatWid extends StatelessWidget {
     super.key,
     required this.prompt,
     required this.imageList,
-    required this.isGenerating
+    required this.isGenerating,
+    this.messageId
   });
 
   String prompt;
+  String? messageId;
   List<dynamic> imageList;
   bool isGenerating;
 
@@ -70,6 +72,8 @@ class ChatWid extends StatelessWidget {
                       ),
                     ],
                   ):
+                  imageList.isEmpty ?
+                  Container() :
                   buildForImageGrid(
                     imageList
                   ),
@@ -98,7 +102,10 @@ class ChatWid extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      context.read<ImageGenCubit>().reGenerateImage(prompt: prompt);
+                      context.read<ImageGenCubit>().reGenerateImage(
+                        messageId: messageId ?? "",
+                        newPrompt: prompt
+                      );
                     },
                     icon: const Icon(
                       HugeIcons.strokeRoundedRefresh,

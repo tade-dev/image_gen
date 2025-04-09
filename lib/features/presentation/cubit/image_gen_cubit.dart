@@ -194,40 +194,47 @@ class ImageGenCubit extends Cubit<ImageGenState> {
     }
   }
 
-  reGenerateImage({required String prompt}) async {
-    log(prompt);
-    if (state.promptMessages == null || state.promptMessages!.isEmpty) return;
-
-    final updatedMessages = List<Message>.from(state.promptMessages!);
-
-    if (updatedMessages.isNotEmpty) {
-      updatedMessages.removeAt(0);
+  reGenerateImage({required String messageId, String? newPrompt}) async {
+    int messageIndex = state.promptMessages?.indexWhere((message) => message.id == messageId) ?? -1;
+    
+    if (messageIndex == -1 || state.promptMessages == null) {
+      log("Cannot regenerate: message not found");
+      return;
     }
-
-    emit(state.copyWith(promptMessages: updatedMessages));
-
+    
+    final originalMessage = state.promptMessages![messageIndex];
+    
+    final promptToUse = newPrompt ?? originalMessage.body;
+    
+    log("Regenerating image with prompt: $promptToUse");
+    
+    final newMessageId = uuid.v4();
+    
     emit(state.copyWith(
       generateImageStatus: FormzSubmissionStatus.inProgress,
       chatErrorModel: null,
       genImage: null,
       promptError: null,
-      currentMessageId: uuid.v4(),
+      currentMessageId: newMessageId,
     ));
-
+    
+    final regeneratingMessage = Message(
+      id: newMessageId,
+      createdAt: DateTime.now().toString(),
+      body: promptToUse,
+      attachments: [],
+      isRegenerating: true,
+    );
+    
+    List<Message> updatedMessages = [...(state.promptMessages ?? [])];
+    updatedMessages[messageIndex] = regeneratingMessage;
+    
     emit(state.copyWith(
-      promptMessages: [
-        Message(
-          id: state.currentMessageId,
-          createdAt: DateTime.now().toString(),
-          body: prompt,
-          attachments: [],
-        ),
-        ...updatedMessages,
-      ],
+      promptMessages: updatedMessages,
     ));
     
     var payload = RequestParams(
-      prompt: prompt,
+      prompt: promptToUse,
       numberOfImages: 4,
     );
 
@@ -235,64 +242,76 @@ class ImageGenCubit extends Cubit<ImageGenState> {
 
     resp.fold(
       (l) {
+        updatedMessages[messageIndex] = originalMessage;
+        
         emit(state.copyWith(
           generateImageStatus: FormzSubmissionStatus.failure,
-          promptError: l.message 
+          promptError: l.message,
+          promptMessages: updatedMessages,
         ));
       },
       (r) {
-        log("I am here");
-      if(r.data == null) {
-        emit(state.copyWith(
-          generateImageStatus: FormzSubmissionStatus.failure,
-          promptError: "Prompt failed"
-        ));
-      }else {
-
-      int index = state.promptMessages?.indexWhere((p) => p.id == state.currentMessageId) ?? -1;
-
-      Message newMessage = Message(
-        createdAt: DateTime.now().toString(),
-        body: prompt,
-        attachments: r.data?.map((e) => e.url ?? "").toList() ?? [],
-      );
-
-      List<Message> updatedMessages = [...(state.promptMessages ?? [])];
-
-      if (index != -1) {
-        updatedMessages[index] = newMessage;
-      } else {
-        updatedMessages.insert(0, newMessage);
-      }
-
-      emit(state.copyWith(
-        generateImageStatus: FormzSubmissionStatus.success,
-        genImage: r,
-        genImageData: r.data,
-        promptError: null,
-        recentImages: [
-          ...?r.data?.map((e) => e.url ?? ""),
-          ...state.recentImages,
-        ],
-        promptMessages: updatedMessages,
-        // recentsPrompts: [
-        //   RecentPromptModel(
-        //     id: uuid.v4(),
-        //     createdAt: DateTime.now().toString(),
-        //     messages: updatedMessages
-        //   ),
-        //   ...?state.recentsPrompts,
-        // ]
-      ));
-
-        log(state.promptMessages.toString());
-        log(state.recentsPrompts.toString());
-      }
+        if (r.data == null || r.data!.isEmpty) {
+          updatedMessages[messageIndex] = originalMessage;
+          
+          emit(state.copyWith(
+            generateImageStatus: FormzSubmissionStatus.failure,
+            promptError: "Image generation failed",
+            promptMessages: updatedMessages,
+          ));
+        } else {
+          Message newMessage = Message(
+            id: newMessageId,
+            createdAt: DateTime.now().toString(),
+            body: promptToUse,
+            attachments: r.data?.map((e) => e.url ?? "").toList() ?? [],
+          );
+          
+          updatedMessages[messageIndex] = newMessage;
+          
+          final activeConversationId = state.activeConversationId;
+          if (activeConversationId == null) {
+            log("Warning: No active conversation found for regeneration");
+            return;
+          }
+          
+          final conversationIndex = state.recentsPrompts?.indexWhere(
+            (conv) => conv.id == activeConversationId
+          ) ?? -1;
+          
+          List<RecentPromptModel> updatedRecentPrompts = [...?state.recentsPrompts];
+          
+          if (conversationIndex != -1 && updatedRecentPrompts.isNotEmpty) {
+            RecentPromptModel updatedConversation = RecentPromptModel(
+              id: activeConversationId,
+              createdAt: updatedRecentPrompts[conversationIndex].createdAt,
+              lastUpdatedAt: DateTime.now().toString(),
+              messages: updatedMessages,
+            );
+            
+            updatedRecentPrompts[conversationIndex] = updatedConversation;
+          }
+          
+          emit(state.copyWith(
+            generateImageStatus: FormzSubmissionStatus.success,
+            genImage: r,
+            genImageData: r.data,
+            promptError: null,
+            recentImages: [
+              ...?r.data?.map((e) => e.url ?? ""),
+              ...state.recentImages,
+            ],
+            promptMessages: updatedMessages,
+            recentsPrompts: updatedRecentPrompts,
+          ));
+          
+          // Cache the images
+          // await GeneratedImagesCache().setGeneratedImagesCache(state.recentImages);
+          
+          log("Regeneration complete for message $messageId");
+        }
       }
     );
-
-    await GeneratedImagesCache().setGeneratedImagesCache(state.recentImages);
-
   }
 
   getRecentConversations() async {

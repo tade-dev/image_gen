@@ -55,16 +55,10 @@ class RecentsTile extends StatelessWidget {
         ),
       ).animate()
       .fade(
-        delay: isFromHome ? const Duration(milliseconds: 2000) : const Duration(milliseconds: 10),
+        delay: isFromHome ? const Duration(milliseconds: 1000) : const Duration(milliseconds: 10),
         begin: 0,
         end: 1
       )
-      .slide(
-        delay: isFromHome ? Duration(milliseconds: ((index * 100) + 2000).toInt()) : const Duration(milliseconds: 100),
-        duration: const Duration(milliseconds: 500),
-        begin: const Offset(0, 1),
-        end: const Offset(0, 0),
-      ),
     );
   }
 

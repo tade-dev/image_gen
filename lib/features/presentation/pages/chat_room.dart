@@ -59,6 +59,7 @@ class ChatRoomView extends StatelessWidget {
                             imageList: state.promptMessages?[index].attachments ?? [],
                             prompt: state.promptMessages?[index].body ?? "",
                             isGenerating: isGenerating,
+                            messageId: state.promptMessages?[index].id,
                           );
                         },
                         separatorBuilder: (context, index) => const SizedBox(height: 30),
