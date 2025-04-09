@@ -46,6 +46,7 @@ class ImageGenCubit extends Cubit<ImageGenState> {
   clearPrompt() {
     emit(state.copyWith(
       promptString: '',
+      prompt: TextEditingController(text: "")
     ));
   }
 
@@ -166,7 +167,7 @@ class ImageGenCubit extends Cubit<ImageGenState> {
         log("Updated messages: ${updatedMessages.length}");
         log("Recent prompts count: ${updatedRecentPrompts.length}");
         
-        // await GeneratedImagesCache().setGeneratedImagesCache(state.recentImages);
+        GeneratedImagesCache().setGeneratedImagesCache(state.recentImages);
       }
     );
   }
@@ -306,7 +307,7 @@ class ImageGenCubit extends Cubit<ImageGenState> {
           ));
           
           // Cache the images
-          // await GeneratedImagesCache().setGeneratedImagesCache(state.recentImages);
+          GeneratedImagesCache().setGeneratedImagesCache(state.recentImages);
           
           log("Regeneration complete for message $messageId");
         }

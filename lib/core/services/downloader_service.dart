@@ -9,37 +9,58 @@ import 'package:permission_handler/permission_handler.dart';
 
 class ImageDownloader {
   static Future<void> downloadMultipleImages(BuildContext context, List<String> imageUrls) async {
-    _showDownloadingDialog(context, imageUrls.length);
+    if (imageUrls.isEmpty) {
+      handleSuccess(message: "No images to download");
+      return;
+    }
+    
+    final GlobalKey<DownloadProgressDialogState> progressKey = GlobalKey<DownloadProgressDialogState>();
+    
+    if (context.mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext dialogContext) {
+          return DownloadProgressDialog(
+            key: progressKey,
+            total: imageUrls.length,
+          );
+        },
+      );
+    }
     
     try {
       if (await _requestPermission()) {
         int completed = 0;
         
-        List<Future<void>> downloadFutures = imageUrls.map((url) async {
-          await _downloadAndSaveImage(url);
-          
-          completed++;
-          if (context.mounted) {
-            _updateDownloadProgress(context, completed, imageUrls.length);
+        for (var url in imageUrls) {
+          try {
+            await _downloadAndSaveImage(url);
+            completed++;
+            
+            if (context.mounted && progressKey.currentState != null) {
+              progressKey.currentState!.updateProgress(completed);
+            }
+          } catch (e) {
+            debugPrint("Error downloading individual image $url: $e");
           }
-        }).toList();
-        
-        await Future.wait(downloadFutures);
-        
-        if (context.mounted) {
-          Navigator.of(context, rootNavigator: true).pop();
         }
         
-        handleSuccess(message: "All images downloaded successfully!");
+        await Future.delayed(const Duration(milliseconds: 300));
+        if (context.mounted) {
+          Navigator.of(context).pop();
+          handleSuccess(message: "Images downloaded successfully!");
+        }
       } else {
         if (context.mounted) {
-          Navigator.of(context, rootNavigator: true).pop();
+          Navigator.of(context).pop();
           handleException("Permission denied", context);
         }
       }
     } catch (e) {
+      debugPrint("General download error: $e");
       if (context.mounted) {
-        Navigator.of(context, rootNavigator: true).pop();
+        Navigator.of(context).pop();
         handleException("Error: ${e.toString()}", context);
       }
     }
@@ -49,13 +70,21 @@ class ImageDownloader {
     try {
       var response = await Dio().get(
         imageUrl, 
-        options: Options(responseType: ResponseType.bytes)
+        options: Options(
+          responseType: ResponseType.bytes,
+          sendTimeout: const Duration(seconds: 30),
+          receiveTimeout: const Duration(seconds: 30),
+        )
       );
 
-      var result = await ImageGallerySaver.saveImage(Uint8List.fromList(response.data));
+      final result = await ImageGallerySaver.saveImage(
+        Uint8List.fromList(response.data),
+        quality: 100,
+      );
       
-      if (!result['isSuccess']) {
+      if (result == null || result['isSuccess'] != true) {
         debugPrint("Failed to save image to gallery: $imageUrl");
+        throw Exception("Failed to save image");
       }
     } catch (e) {
       debugPrint("Error downloading $imageUrl: $e");
@@ -64,25 +93,11 @@ class ImageDownloader {
   }
 
   static Future<bool> _requestPermission() async {
+    if (await Permission.photos.request().isGranted) {
+      return true;
+    }
+    
     var status = await Permission.storage.request();
     return status.isGranted;
-  }
-  
-  static void _showDownloadingDialog(BuildContext context, int totalImages) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return DownloadProgressDialog(total: totalImages);
-      },
-    );
-  }
-  
-  static void _updateDownloadProgress(BuildContext context, int completed, int total) {
-    final DownloadProgressDialogState? progressDialog = 
-        context.findAncestorStateOfType<DownloadProgressDialogState>();
-    if (progressDialog != null) {
-      progressDialog.updateProgress(completed);
-    }
   }
 }
