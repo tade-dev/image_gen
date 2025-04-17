@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
 
 class HomePageView extends StatelessWidget {
@@ -88,41 +89,57 @@ class HomePageView extends StatelessWidget {
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Center(
-                      child: PromptField(
-                        onChanged: (value) {
-                          context.read<ImageGenCubit>().updatePromptString(value);
-                        },
-                        controller: state.prompt,
-                        suffixIcon: Visibility(
-                          visible: state.promptString.isNotEmpty,
-                          child: GestureDetector(
-                            onTap: () {
-                              context.read<ImageGenCubit>().startNewConversation();
-                              Future.delayed(const Duration(
-                                milliseconds: 100
-                              ), (){
-                                if(context.mounted) {
-                                  context.read<ImageGenCubit>().generateImage(prompt: state.promptString);
-                                  si<AppRouter>().push(const ChatRoomView());
-                                }
-                              });
-                            },
-                            child: SvgPicture.asset(
-                              Assets.svg.mynauiArrowUpRightCircleSolid,
-                              height: 10,
-                              width: 10,
-                            ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: PromptField(
+                    selectedImages: state.selectedImages,
+                    onpressImage: () {
+                      context.read<ImageGenCubit>().removeImage(0);
+                    },
+                    onChanged: (value) {
+                      context.read<ImageGenCubit>().updatePromptString(value);
+                    },
+                    controller: state.prompt,
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.only(right: 20, bottom: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: (){
+                              context.read<ImageGenCubit>().getImage();
+                            }, 
+                            icon: const Icon(
+                              HugeIcons.strokeRoundedImage01,
+                              color: ColorManager.primaryTextColor,
+                            )
                           ),
-                        ).animate().fade().scale(),
-                        hintText: "Ask anything...",
+                          Visibility(
+                            visible: state.promptString.isNotEmpty,
+                            child: GestureDetector(
+                              onTap: () {
+                                context.read<ImageGenCubit>().startNewConversation();
+                                Future.delayed(const Duration(
+                                  milliseconds: 100
+                                ), (){
+                                  if(context.mounted) {
+                                    context.read<ImageGenCubit>().generateImage(prompt: state.promptString);
+                                    si<AppRouter>().push(const ChatRoomView());
+                                  }
+                                });
+                              },
+                              child: SvgPicture.asset(
+                                Assets.svg.mynauiArrowUpRightCircleSolid,
+                                height: 40,
+                                width: 40,
+                              ),
+                            ),
+                          ).animate().fade().scale(),
+                        ],
                       ),
-                    )
-                  ),
+                    ),
+                    hintText: "Ask anything...",
+                  )
                 )
               ],
             ),

@@ -2,6 +2,8 @@
 //
 //     final recentPromptModel = recentPromptModelFromJson(jsonString);
 
+import 'dart:io';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'dart:convert';
 part 'recent_prompt_model.freezed.dart';
@@ -30,6 +32,7 @@ class Message with _$Message {
         String? id,
         String? createdAt,
         String? body,
+        String? variationImg,
         List<String>? attachments,
         bool? isRegenerating,
         bool? variation

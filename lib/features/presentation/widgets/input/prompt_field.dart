@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/core/resources/colors_x.dart';
 import 'package:app/core/resources/styles_x.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,9 @@ class PromptField extends StatelessWidget {
     this.minLines,
     this.readOnly = false,
     this.autofocus = false,
-    this.validator
+    this.validator,
+    this.onpressImage,
+    this.selectedImages
   });
 
   final TextEditingController? controller;
@@ -50,57 +54,113 @@ class PromptField extends StatelessWidget {
   final bool readOnly;
   final bool autofocus;
   final FormFieldValidator<String>? validator;
+  final List<File>? selectedImages;
+  final Function()? onpressImage;
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      enabled: enabled,
-      obscureText: obscureText,
-      onChanged: onChanged,
-      onTap: onTap,
-      minLines: minLines,
-      maxLines: maxLines,
-      maxLength: maxLength,
-      controller: controller,
-      onSaved: onSaved,
-      readOnly: readOnly,
-      validator: validator,
-      autofocus: autofocus,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      onFieldSubmitted: onFieldSubmitted,
-      onEditingComplete: onEditingComplete,
-      textDirection: TextDirection.ltr,
-      keyboardType: inputType,
-      style: getRegularStyle(color: ColorManager.primaryTextColor, fontSize: 16),
-      decoration: InputDecoration(
-        hintText: hintText,
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(50)
-        ),
-        fillColor: ColorManager.cardColor,
-        filled: true,
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(50)
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(50)
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(50)
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(50)
-        ),
-        hintStyle: getMediumStyle(
-            color: ColorManager.secondaryTextColor, fontSize: 16),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      padding: const EdgeInsets.only(top: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: ColorManager.cardColor,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+            child: Row(
+              children: List.generate(
+                (selectedImages ?? []).length, 
+                (index) => Stack(
+                  children: [
+                    Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        image: DecorationImage(
+                          image: FileImage(selectedImages![index]),
+                          fit: BoxFit.cover
+                        )
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 5, top: 5),
+                        child: GestureDetector(
+                          onTap: onpressImage,
+                          child: CircleAvatar(
+                            radius: 10,
+                            backgroundColor: ColorManager.cardColor.withOpacity(0.5),
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.white,
+                              size: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ),
+            ),
+          ),
+          TextFormField(
+            enabled: enabled,
+            obscureText: obscureText,
+            onChanged: onChanged,
+            onTap: onTap,
+            minLines: minLines,
+            maxLines: maxLines,
+            maxLength: maxLength,
+            controller: controller,
+            onSaved: onSaved,
+            readOnly: readOnly,
+            validator: validator,
+            autofocus: autofocus,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            onFieldSubmitted: onFieldSubmitted,
+            onEditingComplete: onEditingComplete,
+            textDirection: TextDirection.ltr,
+            keyboardType: inputType,
+            style: getRegularStyle(color: ColorManager.primaryTextColor, fontSize: 16),
+            decoration: InputDecoration(
+              hintText: hintText,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(20)
+              ),
+              fillColor: ColorManager.cardColor,
+              filled: true,
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(20)
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(20)
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              prefixIcon: prefixIcon,
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(20)
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(20)
+              ),
+              hintStyle: getMediumStyle(
+                  color: ColorManager.secondaryTextColor, fontSize: 16),
+            ),
+          ),
+          suffixIcon ??const SizedBox.shrink()
+        ],
       ),
     );
   }

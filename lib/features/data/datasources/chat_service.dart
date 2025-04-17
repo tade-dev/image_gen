@@ -7,6 +7,6 @@ abstract class ChatService {
 
   Future<GenImageModel> generateImage({prompt, n});
 
-  Future<GenImageModel> createImageVariation({prompt, n, img});
+  Future<GenImageModel> createImageVariation({n, img});
 
 }

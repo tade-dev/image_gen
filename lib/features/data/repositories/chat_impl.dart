@@ -43,7 +43,6 @@ class ChatImpl extends ChatRepository {
   ) async {
     try {
       final dataResp = await chatService.createImageVariation(
-        prompt: prompt,
         n: n,
         img: img
       );

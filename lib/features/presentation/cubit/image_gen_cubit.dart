@@ -130,6 +130,7 @@ class ImageGenCubit extends Cubit<ImageGenState> {
         Message updatedMessage = Message(
           id: messageId,
           variation: isImageVariation,
+          variationImg: isImageVariation ? (state.selectedImages ?? [])[0].path : null,
           createdAt: DateTime.now().toString(),
           body: prompt ?? state.promptString,
           attachments: r.data?.map((e) => e.url ?? "").toList() ?? [],
@@ -355,15 +356,19 @@ class ImageGenCubit extends Cubit<ImageGenState> {
     await GeneratedImagesCache().setGeneratedImagesCache(state.recentImages);
   }
 
-  removeImage(index) {
-    state.selectedImages?.removeAt(index);
-    emit(state.copyWith(
-      selectedImages: state.selectedImages
-    ));
+  removeImage(int index) {
+    final images = List.of(state.selectedImages ?? []);
+    
+    images.removeAt(index);
+
+    emit(state.copyWith(selectedImages: List<File>.from(images)));
   }
 
   getImage() async {
     try {
+      emit(state.copyWith(
+        imagePicker: ImagePicker()
+      ));
       var pickedImages = await state.imagePicker?.pickMultiImage();
       
       if (pickedImages != null) {

@@ -30,7 +30,6 @@ class CreateImageVariationUsecase extends UseCase<GenImageModel, RequestParams> 
   @override
   Future<Either<AppError, GenImageModel>> call(RequestParams params) async {
     return await chatRepository.createImageVariation(
-      prompt: params.prompt,
       n: params.numberOfImages,
       img: params.img
     );

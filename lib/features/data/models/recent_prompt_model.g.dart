@@ -31,6 +31,7 @@ _$MessageImpl _$$MessageImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String?,
       createdAt: json['createdAt'] as String?,
       body: json['body'] as String?,
+      variationImg: json['variationImg'] as String?,
       attachments: (json['attachments'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -43,6 +44,7 @@ Map<String, dynamic> _$$MessageImplToJson(_$MessageImpl instance) =>
       'id': instance.id,
       'createdAt': instance.createdAt,
       'body': instance.body,
+      'variationImg': instance.variationImg,
       'attachments': instance.attachments,
       'isRegenerating': instance.isRegenerating,
       'variation': instance.variation,

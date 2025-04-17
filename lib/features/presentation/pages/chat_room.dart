@@ -11,6 +11,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:formz/formz.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:iconsax/iconsax.dart';
 
 class ChatRoomView extends StatelessWidget {
@@ -56,6 +57,8 @@ class ChatRoomView extends StatelessWidget {
                           final isLastItem = index == 0;
                           final isGenerating = isLastItem && state.generateImageStatus.isInProgress;
                           return ChatWid(
+                            variation: state.promptMessages?[index].variation ?? false,
+                            variationImg: state.promptMessages?[index].variationImg,
                             imageList: state.promptMessages?[index].attachments ?? [],
                             prompt: state.promptMessages?[index].body ?? "",
                             isGenerating: isGenerating,
@@ -66,35 +69,57 @@ class ChatRoomView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Center(
-                        child: PromptField(
-                          autofocus: true,
-                          onChanged: (value) {
-                            context.read<ImageGenCubit>().updatePromptString(value);
-                          },
-                          controller: state.prompt,
-                          suffixIcon: Visibility(
-                            visible: state.promptString.isNotEmpty,
-                            child: GestureDetector(
-                              onTap: () {
-                                context.read<ImageGenCubit>().generateImage(prompt: state.promptString);
-                                context.read<ImageGenCubit>().clearPrompt();
-                              },
-                              child: SvgPicture.asset(
-                                Assets.svg.mynauiArrowUpRightCircleSolid,
-                                height: 10,
-                                width: 10,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Center(
+                      child: PromptField(
+                        selectedImages: state.selectedImages,
+                        onpressImage: () {
+                          context.read<ImageGenCubit>().removeImage(0);
+                        },
+                        autofocus: true,
+                        onChanged: (value) {
+                          context.read<ImageGenCubit>().updatePromptString(value);
+                        },
+                        controller: state.prompt,
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.only(right: 20, bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                onPressed: (){
+                                  context.read<ImageGenCubit>().getImage();
+                                }, 
+                                icon: const Icon(
+                                  HugeIcons.strokeRoundedImage01,
+                                  color: ColorManager.primaryTextColor,
+                                )
                               ),
-                            ),
-                          ).animate().fade().scale(),
-                          hintText: "Ask anything...",
+                              Visibility(
+                                visible: state.promptString.isNotEmpty || (state.selectedImages ?? []).isNotEmpty,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if ((state.selectedImages ?? []).isNotEmpty) {
+                                      context.read<ImageGenCubit>().generateImage(prompt: state.promptString, isImageVariation: true);
+                                    }else {
+                                      context.read<ImageGenCubit>().generateImage(prompt: state.promptString);
+                                    }
+                                    context.read<ImageGenCubit>().clearPrompt();
+                                  },
+                                  child: SvgPicture.asset(
+                                    Assets.svg.mynauiArrowUpRightCircleSolid,
+                                    height: 40,
+                                    width: 40,
+                                  ),
+                                ),
+                              ).animate().fade().scale(),
+                            ],
+                          ),
                         ),
-                      )
-                    ),
+                        hintText: "Ask anything...",
+                      ),
+                    )
                   )
                 ],
               ),

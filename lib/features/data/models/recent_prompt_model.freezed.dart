@@ -235,6 +235,7 @@ mixin _$Message {
   String? get id => throw _privateConstructorUsedError;
   String? get createdAt => throw _privateConstructorUsedError;
   String? get body => throw _privateConstructorUsedError;
+  String? get variationImg => throw _privateConstructorUsedError;
   List<String>? get attachments => throw _privateConstructorUsedError;
   bool? get isRegenerating => throw _privateConstructorUsedError;
   bool? get variation => throw _privateConstructorUsedError;
@@ -253,6 +254,7 @@ abstract class $MessageCopyWith<$Res> {
       {String? id,
       String? createdAt,
       String? body,
+      String? variationImg,
       List<String>? attachments,
       bool? isRegenerating,
       bool? variation});
@@ -274,6 +276,7 @@ class _$MessageCopyWithImpl<$Res, $Val extends Message>
     Object? id = freezed,
     Object? createdAt = freezed,
     Object? body = freezed,
+    Object? variationImg = freezed,
     Object? attachments = freezed,
     Object? isRegenerating = freezed,
     Object? variation = freezed,
@@ -290,6 +293,10 @@ class _$MessageCopyWithImpl<$Res, $Val extends Message>
       body: freezed == body
           ? _value.body
           : body // ignore: cast_nullable_to_non_nullable
+              as String?,
+      variationImg: freezed == variationImg
+          ? _value.variationImg
+          : variationImg // ignore: cast_nullable_to_non_nullable
               as String?,
       attachments: freezed == attachments
           ? _value.attachments
@@ -318,6 +325,7 @@ abstract class _$$MessageImplCopyWith<$Res> implements $MessageCopyWith<$Res> {
       {String? id,
       String? createdAt,
       String? body,
+      String? variationImg,
       List<String>? attachments,
       bool? isRegenerating,
       bool? variation});
@@ -337,6 +345,7 @@ class __$$MessageImplCopyWithImpl<$Res>
     Object? id = freezed,
     Object? createdAt = freezed,
     Object? body = freezed,
+    Object? variationImg = freezed,
     Object? attachments = freezed,
     Object? isRegenerating = freezed,
     Object? variation = freezed,
@@ -353,6 +362,10 @@ class __$$MessageImplCopyWithImpl<$Res>
       body: freezed == body
           ? _value.body
           : body // ignore: cast_nullable_to_non_nullable
+              as String?,
+      variationImg: freezed == variationImg
+          ? _value.variationImg
+          : variationImg // ignore: cast_nullable_to_non_nullable
               as String?,
       attachments: freezed == attachments
           ? _value._attachments
@@ -377,6 +390,7 @@ class _$MessageImpl implements _Message {
       {this.id,
       this.createdAt,
       this.body,
+      this.variationImg,
       final List<String>? attachments,
       this.isRegenerating,
       this.variation})
@@ -391,6 +405,8 @@ class _$MessageImpl implements _Message {
   final String? createdAt;
   @override
   final String? body;
+  @override
+  final String? variationImg;
   final List<String>? _attachments;
   @override
   List<String>? get attachments {
@@ -408,7 +424,7 @@ class _$MessageImpl implements _Message {
 
   @override
   String toString() {
-    return 'Message(id: $id, createdAt: $createdAt, body: $body, attachments: $attachments, isRegenerating: $isRegenerating, variation: $variation)';
+    return 'Message(id: $id, createdAt: $createdAt, body: $body, variationImg: $variationImg, attachments: $attachments, isRegenerating: $isRegenerating, variation: $variation)';
   }
 
   @override
@@ -420,6 +436,8 @@ class _$MessageImpl implements _Message {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.body, body) || other.body == body) &&
+            (identical(other.variationImg, variationImg) ||
+                other.variationImg == variationImg) &&
             const DeepCollectionEquality()
                 .equals(other._attachments, _attachments) &&
             (identical(other.isRegenerating, isRegenerating) ||
@@ -435,6 +453,7 @@ class _$MessageImpl implements _Message {
       id,
       createdAt,
       body,
+      variationImg,
       const DeepCollectionEquality().hash(_attachments),
       isRegenerating,
       variation);
@@ -458,6 +477,7 @@ abstract class _Message implements Message {
       {final String? id,
       final String? createdAt,
       final String? body,
+      final String? variationImg,
       final List<String>? attachments,
       final bool? isRegenerating,
       final bool? variation}) = _$MessageImpl;
@@ -470,6 +490,8 @@ abstract class _Message implements Message {
   String? get createdAt;
   @override
   String? get body;
+  @override
+  String? get variationImg;
   @override
   List<String>? get attachments;
   @override

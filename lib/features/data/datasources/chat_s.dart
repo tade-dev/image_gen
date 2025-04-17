@@ -49,7 +49,6 @@ class ChatSource extends ChatService {
 
   @override
   Future<GenImageModel> createImageVariation({
-    prompt,
     n,
     img
   }) async {
@@ -58,7 +57,6 @@ class ChatSource extends ChatService {
       log(token);
       FormData formData = FormData.fromMap(
         {
-          "prompt": prompt,
           "n": n,
           "image": img
         },
@@ -67,8 +65,8 @@ class ChatSource extends ChatService {
         "$baseUrl${key.generateImage}",
         data: formData,
         options: Options(headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
+          "Content-Type": "multipart/form-data",
+          "Accept": "*/*",
           "Authorization": "Bearer $token"
         }),
       );

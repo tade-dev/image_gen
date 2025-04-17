@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/core/api/success.dart';
 import 'package:app/core/resources/colors_x.dart';
 import 'package:app/core/resources/styles_x.dart';
@@ -20,14 +22,18 @@ class ChatWid extends StatelessWidget {
     super.key,
     required this.prompt,
     required this.imageList,
+    this.variationImg,
     required this.isGenerating,
+    this.variation = false,
     this.messageId
   });
 
   String prompt;
+  String? variationImg;
   String? messageId;
   List<dynamic> imageList;
   bool isGenerating;
+  bool variation;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +47,23 @@ class ChatWid extends StatelessWidget {
               (state.promptError != null && state.promptError!.isNotEmpty) || state.generateImageStatus.isFailure?
               ChatErrorWid(text: state.promptError ?? "") :
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  variation ?
+                  Container(
+                    height: 100,
+                    width: 100,
+                    margin: const EdgeInsets.only(bottom: 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      image: variationImg != null 
+                          ? DecorationImage(
+                              image: FileImage(File(variationImg ?? "")),
+                              fit: BoxFit.cover,
+                            )
+                          : null
+                    ),
+                  ) : const SizedBox.shrink(),
                   Row(
                     children: [
                       CircleAvatar(

@@ -59,12 +59,29 @@ class ChatHistoryView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Images",
-                    style: getBoldStyle(
-                      color: ColorManager.primaryTextColor,
-                      fontSize: 18
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Images",
+                        style: getBoldStyle(
+                          color: ColorManager.primaryTextColor,
+                          fontSize: 18
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: (){
+                          context.read<ImageGenCubit>().clearRecentImages();
+                        }, 
+                        child: Text(
+                          "Clear",
+                          style: getBoldStyle(
+                            color: ColorManager.chatErrorBorder,
+                            fontSize: 18
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                   const SizedBox(height: 5),
                   buildImageHistoryWid(),
