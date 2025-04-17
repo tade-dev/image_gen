@@ -10,4 +10,8 @@ abstract class ChatRepository {
     prompt, n
   });
 
+  Future<Either<AppError, GenImageModel>> createImageVariation({
+    prompt, n, img
+  });
+
 }

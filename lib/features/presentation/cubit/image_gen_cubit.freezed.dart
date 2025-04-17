@@ -18,7 +18,9 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$ImageGenState {
   TextEditingController? get prompt => throw _privateConstructorUsedError;
   String get promptString => throw _privateConstructorUsedError;
+  List<File>? get selectedImages => throw _privateConstructorUsedError;
   GenImageModel? get genImage => throw _privateConstructorUsedError;
+  ImagePicker? get imagePicker => throw _privateConstructorUsedError;
   List<ImageDatum>? get genImageData => throw _privateConstructorUsedError;
   String? get promptError => throw _privateConstructorUsedError;
   List<String> get recentImages => throw _privateConstructorUsedError;
@@ -47,7 +49,9 @@ abstract class $ImageGenStateCopyWith<$Res> {
   $Res call(
       {TextEditingController? prompt,
       String promptString,
+      List<File>? selectedImages,
       GenImageModel? genImage,
+      ImagePicker? imagePicker,
       List<ImageDatum>? genImageData,
       String? promptError,
       List<String> recentImages,
@@ -78,7 +82,9 @@ class _$ImageGenStateCopyWithImpl<$Res, $Val extends ImageGenState>
   $Res call({
     Object? prompt = freezed,
     Object? promptString = null,
+    Object? selectedImages = freezed,
     Object? genImage = freezed,
+    Object? imagePicker = freezed,
     Object? genImageData = freezed,
     Object? promptError = freezed,
     Object? recentImages = null,
@@ -99,10 +105,18 @@ class _$ImageGenStateCopyWithImpl<$Res, $Val extends ImageGenState>
           ? _value.promptString
           : promptString // ignore: cast_nullable_to_non_nullable
               as String,
+      selectedImages: freezed == selectedImages
+          ? _value.selectedImages
+          : selectedImages // ignore: cast_nullable_to_non_nullable
+              as List<File>?,
       genImage: freezed == genImage
           ? _value.genImage
           : genImage // ignore: cast_nullable_to_non_nullable
               as GenImageModel?,
+      imagePicker: freezed == imagePicker
+          ? _value.imagePicker
+          : imagePicker // ignore: cast_nullable_to_non_nullable
+              as ImagePicker?,
       genImageData: freezed == genImageData
           ? _value.genImageData
           : genImageData // ignore: cast_nullable_to_non_nullable
@@ -182,7 +196,9 @@ abstract class _$$InitialImplCopyWith<$Res>
   $Res call(
       {TextEditingController? prompt,
       String promptString,
+      List<File>? selectedImages,
       GenImageModel? genImage,
+      ImagePicker? imagePicker,
       List<ImageDatum>? genImageData,
       String? promptError,
       List<String> recentImages,
@@ -213,7 +229,9 @@ class __$$InitialImplCopyWithImpl<$Res>
   $Res call({
     Object? prompt = freezed,
     Object? promptString = null,
+    Object? selectedImages = freezed,
     Object? genImage = freezed,
+    Object? imagePicker = freezed,
     Object? genImageData = freezed,
     Object? promptError = freezed,
     Object? recentImages = null,
@@ -234,10 +252,18 @@ class __$$InitialImplCopyWithImpl<$Res>
           ? _value.promptString
           : promptString // ignore: cast_nullable_to_non_nullable
               as String,
+      selectedImages: freezed == selectedImages
+          ? _value._selectedImages
+          : selectedImages // ignore: cast_nullable_to_non_nullable
+              as List<File>?,
       genImage: freezed == genImage
           ? _value.genImage
           : genImage // ignore: cast_nullable_to_non_nullable
               as GenImageModel?,
+      imagePicker: freezed == imagePicker
+          ? _value.imagePicker
+          : imagePicker // ignore: cast_nullable_to_non_nullable
+              as ImagePicker?,
       genImageData: freezed == genImageData
           ? _value._genImageData
           : genImageData // ignore: cast_nullable_to_non_nullable
@@ -288,7 +314,9 @@ class _$InitialImpl extends _Initial {
   const _$InitialImpl(
       {this.prompt,
       this.promptString = "",
+      final List<File>? selectedImages = const [],
       this.genImage,
+      this.imagePicker,
       final List<ImageDatum>? genImageData,
       this.promptError,
       final List<String> recentImages = const [],
@@ -299,7 +327,8 @@ class _$InitialImpl extends _Initial {
       this.activeConversationId = "",
       this.generateImageStatus = FormzSubmissionStatus.initial,
       this.reGenerateImageStatus = FormzSubmissionStatus.initial})
-      : _genImageData = genImageData,
+      : _selectedImages = selectedImages,
+        _genImageData = genImageData,
         _recentImages = recentImages,
         _recentsPrompts = recentsPrompts,
         _promptMessages = promptMessages,
@@ -310,8 +339,21 @@ class _$InitialImpl extends _Initial {
   @override
   @JsonKey()
   final String promptString;
+  final List<File>? _selectedImages;
+  @override
+  @JsonKey()
+  List<File>? get selectedImages {
+    final value = _selectedImages;
+    if (value == null) return null;
+    if (_selectedImages is EqualUnmodifiableListView) return _selectedImages;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   @override
   final GenImageModel? genImage;
+  @override
+  final ImagePicker? imagePicker;
   final List<ImageDatum>? _genImageData;
   @override
   List<ImageDatum>? get genImageData {
@@ -370,7 +412,7 @@ class _$InitialImpl extends _Initial {
 
   @override
   String toString() {
-    return 'ImageGenState(prompt: $prompt, promptString: $promptString, genImage: $genImage, genImageData: $genImageData, promptError: $promptError, recentImages: $recentImages, recentsPrompts: $recentsPrompts, promptMessages: $promptMessages, chatErrorModel: $chatErrorModel, currentMessageId: $currentMessageId, activeConversationId: $activeConversationId, generateImageStatus: $generateImageStatus, reGenerateImageStatus: $reGenerateImageStatus)';
+    return 'ImageGenState(prompt: $prompt, promptString: $promptString, selectedImages: $selectedImages, genImage: $genImage, imagePicker: $imagePicker, genImageData: $genImageData, promptError: $promptError, recentImages: $recentImages, recentsPrompts: $recentsPrompts, promptMessages: $promptMessages, chatErrorModel: $chatErrorModel, currentMessageId: $currentMessageId, activeConversationId: $activeConversationId, generateImageStatus: $generateImageStatus, reGenerateImageStatus: $reGenerateImageStatus)';
   }
 
   @override
@@ -381,8 +423,12 @@ class _$InitialImpl extends _Initial {
             (identical(other.prompt, prompt) || other.prompt == prompt) &&
             (identical(other.promptString, promptString) ||
                 other.promptString == promptString) &&
+            const DeepCollectionEquality()
+                .equals(other._selectedImages, _selectedImages) &&
             (identical(other.genImage, genImage) ||
                 other.genImage == genImage) &&
+            (identical(other.imagePicker, imagePicker) ||
+                other.imagePicker == imagePicker) &&
             const DeepCollectionEquality()
                 .equals(other._genImageData, _genImageData) &&
             (identical(other.promptError, promptError) ||
@@ -410,7 +456,9 @@ class _$InitialImpl extends _Initial {
       runtimeType,
       prompt,
       promptString,
+      const DeepCollectionEquality().hash(_selectedImages),
       genImage,
+      imagePicker,
       const DeepCollectionEquality().hash(_genImageData),
       promptError,
       const DeepCollectionEquality().hash(_recentImages),
@@ -433,7 +481,9 @@ abstract class _Initial extends ImageGenState {
   const factory _Initial(
       {final TextEditingController? prompt,
       final String promptString,
+      final List<File>? selectedImages,
       final GenImageModel? genImage,
+      final ImagePicker? imagePicker,
       final List<ImageDatum>? genImageData,
       final String? promptError,
       final List<String> recentImages,
@@ -451,7 +501,11 @@ abstract class _Initial extends ImageGenState {
   @override
   String get promptString;
   @override
+  List<File>? get selectedImages;
+  @override
   GenImageModel? get genImage;
+  @override
+  ImagePicker? get imagePicker;
   @override
   List<ImageDatum>? get genImageData;
   @override

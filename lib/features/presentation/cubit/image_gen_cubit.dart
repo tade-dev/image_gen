@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:app/core/api/exceptions.dart';
 import 'package:app/core/db/local_cache.dart';
+import 'package:app/core/di/injectable.dart';
 import 'package:app/core/model/ranv_model.dart';
+import 'package:app/core/route/route.gr.dart';
 import 'package:app/features/data/models/chat_error_model.dart';
 import 'package:app/features/data/models/gen_image_model.dart';
 import 'package:app/features/data/models/recent_prompt_model.dart';
@@ -10,11 +14,13 @@ import 'package:app/features/domain/usecase/chat_u.dart';
 import 'package:app/gen/assets.gen.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:formz/formz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+import 'package:image_picker/image_picker.dart';
 part 'image_gen_state.dart';
 part 'image_gen_cubit.freezed.dart';
 
@@ -23,9 +29,11 @@ part 'image_gen_cubit.freezed.dart';
 class ImageGenCubit extends Cubit<ImageGenState> {
 
   GenerateImageUsecase generateImageUsecase;
+  CreateImageVariationUsecase createImageVariationUsecase;
 
   ImageGenCubit(
-    this.generateImageUsecase
+    this.generateImageUsecase,
+    this.createImageVariationUsecase
   ) : super(const ImageGenState()) {
     getRecentImages();
     getRecentConversations();
@@ -62,7 +70,7 @@ class ImageGenCubit extends Cubit<ImageGenState> {
     ));
   }
 
-  generateImage({String? prompt, String? conversationId}) async {
+  generateImage({String? prompt, String? conversationId, bool isImageVariation = false}) async {
     final messageId = uuid.v4();
     
     emit(state.copyWith(
@@ -94,12 +102,20 @@ class ImageGenCubit extends Cubit<ImageGenState> {
       ));
     }
     
-    var payload = RequestParams(
+    var payload = isImageVariation ?
+    RequestParams(
+      prompt: prompt ?? state.promptString,
+      numberOfImages: 4,
+      img: state.selectedImages?[0]
+    ) :
+    RequestParams(
       prompt: prompt ?? state.promptString,
       numberOfImages: 4,
     );
 
-    var resp = await generateImageUsecase(payload);
+    var resp = isImageVariation ?
+    await createImageVariationUsecase(payload) :
+    await generateImageUsecase(payload);
 
     resp.fold(
       (l) {
@@ -113,6 +129,7 @@ class ImageGenCubit extends Cubit<ImageGenState> {
         
         Message updatedMessage = Message(
           id: messageId,
+          variation: isImageVariation,
           createdAt: DateTime.now().toString(),
           body: prompt ?? state.promptString,
           attachments: r.data?.map((e) => e.url ?? "").toList() ?? [],
@@ -331,11 +348,36 @@ class ImageGenCubit extends Cubit<ImageGenState> {
     ));
   }
 
-  // updateRecentConversations(List<String> value) async {
-  //   await RecentPromptsCache().setRecentPromptsCache(value);
-  //   emit(state.copyWith(
-  //     recentsPrompts: recentConversations
-  //   ));
-  // }
+  clearRecentImages() async {
+    emit(state.copyWith(
+      recentImages: []
+    ));
+    await GeneratedImagesCache().setGeneratedImagesCache(state.recentImages);
+  }
+
+  removeImage(index) {
+    state.selectedImages?.removeAt(index);
+    emit(state.copyWith(
+      selectedImages: state.selectedImages
+    ));
+  }
+
+  getImage() async {
+    try {
+      var pickedImages = await state.imagePicker?.pickMultiImage();
+      
+      if (pickedImages != null) {
+
+        var fileImages = pickedImages.map((e)=> File(e.path)).toList();
+        emit(state.copyWith(
+          selectedImages: fileImages
+        ));
+      }
+
+    } on PlatformException catch (e) {
+      var context = si<AppRouter>().navigatorKey.currentContext!;
+      handleException(e.toString(), context);
+    }
+  }
 
 }

@@ -31,7 +31,8 @@ class Message with _$Message {
         String? createdAt,
         String? body,
         List<String>? attachments,
-        bool? isRegenerating
+        bool? isRegenerating,
+        bool? variation
     }) = _Message;
 
     factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);

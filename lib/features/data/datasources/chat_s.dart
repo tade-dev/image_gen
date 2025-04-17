@@ -47,4 +47,37 @@ class ChatSource extends ChatService {
     }
   }
 
+  @override
+  Future<GenImageModel> createImageVariation({
+    prompt,
+    n,
+    img
+  }) async {
+    try {
+      String token = dotenv.env["OPEN_AI_KEY"] ?? "";
+      log(token);
+      FormData formData = FormData.fromMap(
+        {
+          "prompt": prompt,
+          "n": n,
+          "image": img
+        },
+      );
+      Response? response = await api.post(
+        "$baseUrl${key.generateImage}",
+        data: formData,
+        options: Options(headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $token"
+        }),
+      );
+      log('api-resp==> ${response?.data}');
+      final r = GenImageModel.fromJson(response?.data);
+      return r;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }

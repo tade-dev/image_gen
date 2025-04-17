@@ -35,6 +35,7 @@ _$MessageImpl _$$MessageImplFromJson(Map<String, dynamic> json) =>
           ?.map((e) => e as String)
           .toList(),
       isRegenerating: json['isRegenerating'] as bool?,
+      variation: json['variation'] as bool?,
     );
 
 Map<String, dynamic> _$$MessageImplToJson(_$MessageImpl instance) =>
@@ -44,4 +45,5 @@ Map<String, dynamic> _$$MessageImplToJson(_$MessageImpl instance) =>
       'body': instance.body,
       'attachments': instance.attachments,
       'isRegenerating': instance.isRegenerating,
+      'variation': instance.variation,
     };

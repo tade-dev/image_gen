@@ -40,10 +40,15 @@ extension GetItInjectableX on _i1.GetIt {
       () => _i8.ChatImpl(gh<_i5.ChatService>(instanceName: 'chatsource')),
       instanceName: 'ChatRepository',
     );
+    gh.factory<_i9.CreateImageVariationUsecase>(() =>
+        _i9.CreateImageVariationUsecase(
+            gh<_i7.ChatRepository>(instanceName: 'ChatRepository')));
     gh.factory<_i9.GenerateImageUsecase>(() => _i9.GenerateImageUsecase(
         gh<_i7.ChatRepository>(instanceName: 'ChatRepository')));
-    gh.lazySingleton<_i10.ImageGenCubit>(
-        () => _i10.ImageGenCubit(gh<_i9.GenerateImageUsecase>()));
+    gh.lazySingleton<_i10.ImageGenCubit>(() => _i10.ImageGenCubit(
+          gh<_i9.GenerateImageUsecase>(),
+          gh<_i9.CreateImageVariationUsecase>(),
+        ));
     return this;
   }
 }

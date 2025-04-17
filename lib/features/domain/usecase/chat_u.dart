@@ -20,3 +20,19 @@ class GenerateImageUsecase extends UseCase<GenImageModel, RequestParams> {
     );
   }
 }
+
+@injectable
+class CreateImageVariationUsecase extends UseCase<GenImageModel, RequestParams> {
+  final ChatRepository chatRepository;
+
+  CreateImageVariationUsecase(@Named("ChatRepository") this.chatRepository);
+
+  @override
+  Future<Either<AppError, GenImageModel>> call(RequestParams params) async {
+    return await chatRepository.createImageVariation(
+      prompt: params.prompt,
+      n: params.numberOfImages,
+      img: params.img
+    );
+  }
+}

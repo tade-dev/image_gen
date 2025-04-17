@@ -11,6 +11,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:formz/formz.dart';
 import 'package:hugeicons/hugeicons.dart';
 
 // ignore: must_be_immutable
@@ -37,7 +38,7 @@ class ChatWid extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              (state.promptError != null && state.promptError!.isNotEmpty)?
+              (state.promptError != null && state.promptError!.isNotEmpty) || state.generateImageStatus.isFailure?
               ChatErrorWid(text: state.promptError ?? "") :
               Column(
                 children: [

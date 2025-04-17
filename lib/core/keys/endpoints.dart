@@ -8,6 +8,7 @@ class Endpoints {
 
 class _Keys {
   final generateImage = "images/generations";
+  final createImageVariation = "images/variations";
 }
 
 final key = _Keys();

@@ -36,4 +36,25 @@ class ChatImpl extends ChatRepository {
       }
     }
   }
+
+  @override
+  Future<Either<AppError, GenImageModel>> createImageVariation(
+    {prompt, n, img}
+  ) async {
+    try {
+      final dataResp = await chatService.createImageVariation(
+        prompt: prompt,
+        n: n,
+        img: img
+      );
+      log('dataResp:: $dataResp');
+      return Right(dataResp);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return Right(GenImageModel.fromJson(e.response!.data));
+      } else {
+        return Left(AppError(e.message ?? "Unexpected error please try again"));
+      }
+    }
+  }
 }

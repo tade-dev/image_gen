@@ -8,7 +8,9 @@ class ImageGenState with _$ImageGenState {
   const factory ImageGenState({
     TextEditingController? prompt,
     @Default("") String promptString,
+    @Default([]) List<File>? selectedImages,
     GenImageModel? genImage,
+    ImagePicker? imagePicker,
     List<ImageDatum>? genImageData,
     String? promptError,
     @Default([]) List<String> recentImages,
